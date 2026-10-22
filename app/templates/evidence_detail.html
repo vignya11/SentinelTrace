@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf, badge %}{% block title %}{{ e.ref }}{% endblock %}{% block content %}
+<div class="page-h"><div><h1>{{ e.ref }}</h1><p>Chain of custody</p></div><div class="row">
+<form method="post" action="{{ url_for('main.evidence_verify', ref=e.ref) }}">{{ csrf() }}<button class="btn">{{ icon('check') }} Re-verify digest</button></form>
+<a class="btn p" href="{{ url_for('main.evidence_download', ref=e.ref) }}">{{ icon('download') }} Download</a></div></div>
+<div class="cols"><div class="card"><h2>Acquisition</h2><dl class="kv"><dt>Format</dt><dd>{{ e.fmt|upper }} · {{ e.size_bytes }} bytes</dd><dt>SHA-256</dt><dd><span class="hash">{{ e.sha256 }}</span></dd><dt>Records</dt><dd>{{ e.record_count }}</dd>
+<dt>Examiner</dt><dd>{{ e.creator }}</dd><dt>Acquired</dt><dd>{{ e.created_at }}</dd><dt>Chain head at export</dt><dd>seq {{ e.chain_head_seq }} · <span class="hash">{{ e.chain_head_hash|short }}</span></dd>
+<dt>Filters</dt><dd class="mono">{{ filters or 'none' }}</dd>{% if e.includes_synthetic %}<dt>Data</dt><dd><span class="badge b-syn">includes synthetic demo data</span></dd>{% endif %}</dl>
+<p class="muted">The digest shows the file is unchanged since acquisition. It does not by itself establish authenticity or legal admissibility.</p></div>
+<form method="post" action="{{ url_for('main.custody_note', ref=e.ref) }}" class="card stack"><h2>Record handling</h2>{{ csrf() }}<div><label for="a">Entry</label><select id="a" name="action"><option value="transferred">Transfer (who to whom, why)</option><option value="note">Note</option></select></div>
+<div><label for="d">Details</label><textarea id="d" name="detail" required maxlength="500"></textarea></div><button class="btn p">Add custody entry</button><p class="muted">Entries are append-only and cannot be edited or deleted.</p></form></div>
+<div class="card"><h2>Custody log</h2>{% if findings %}<div class="flash error">Custody chain verification FAILED: {{ findings|length }} finding(s). Treat this evidence record as compromised.</div>{% else %}<p>{{ badge('active') }} Custody chain verified ({{ rows|length }} entries).</p>{% endif %}
+<div class="tw"><table><tr><th>Time (UTC)</th><th>Action</th><th>Actor</th><th>Detail</th><th>Entry hash</th></tr>{% for r in rows %}<tr><td>{{ r.ts|ts }}</td><td>{{ badge('info') if false }}{{ r.action }}</td><td>{{ r.actor_name }}</td><td>{{ r.detail }}</td><td><span class="hash">{{ r.entry_hash[:12] }}…</span></td></tr>{% endfor %}</table></div></div>{% endblock %}

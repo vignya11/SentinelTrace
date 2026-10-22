@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf, badge %}{% block title %}Investigations{% endblock %}{% block content %}
+<div class="page-h"><div><h1>Investigations</h1><p>Cases reference original events; they never modify them.</p></div></div>
+<form method="post" class="card"><h2>Open a case</h2><div class="fg">{{ csrf() }}<div><label for="t">Title</label><input id="t" name="title" required minlength="3" maxlength="160"></div>
+<div><label for="s">Severity</label><select id="s" name="severity">{% for s in ['low','medium','high','critical'] %}<option>{{ s }}</option>{% endfor %}</select></div><div><button class="btn p">Create case</button></div></div></form>
+<div class="card"><div class="tw"><table><tr><th>Case</th><th>Title</th><th>Severity</th><th>Status</th><th>Owner</th><th class="n">Events</th><th>Updated</th></tr>
+{% for c in rows %}<tr><td><a href="{{ url_for('main.case_detail', ref=c.ref) }}">{{ c.ref }}</a></td><td>{{ c.title }}</td><td>{{ badge(c.severity) }}</td><td>{{ badge(c.status) }}</td><td>{{ c.owner }}</td><td class="n">{{ c.n_events }}</td><td>{{ c.updated_at|ts }}</td></tr>
+{% else %}<tr><td colspan="7" class="empty">No cases yet. Open one above, or link events from an alert.</td></tr>{% endfor %}</table></div></div>{% endblock %}

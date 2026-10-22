@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf %}{% block title %}Two-factor code{% endblock %}{% block public %}
+<div class="auth"><div class="card"><h1>Two-factor code</h1><p class="muted">Enter the 6-digit code from your authenticator app.</p>
+{% for c, m in get_flashed_messages(with_categories=true) %}<div class="flash {{ c }}" role="alert">{{ m }}</div>{% endfor %}
+<form method="post" class="stack">{{ csrf() }}<div><label for="c">Code</label><input id="c" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code" autofocus></div>
+<button class="btn p" type="submit">Verify and sign in</button></form><p><a href="{{ url_for('auth.login') }}">Start over</a></p></div></div>{% endblock %}

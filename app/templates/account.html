@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf, badge %}{% block title %}My account{% endblock %}{% block content %}
+<div class="page-h"><div><h1>My account</h1><p>{{ user.username }} · {{ badge(user.role) }}</p></div></div>
+<div class="cols2"><div class="card"><h2>Change password</h2><form method="post" action="{{ url_for('auth.change_password') }}" class="stack">{{ csrf() }}
+<div><label for="cp">Current password</label><input id="cp" type="password" name="current_password" required autocomplete="current-password"></div>
+<div><label for="np">New password (12+ characters)</label><input id="np" type="password" name="new_password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
+<button class="btn p">Change password</button></form><p class="muted">Changing it signs out every other session.</p></div>
+<div class="card"><h2>Two-factor authentication</h2>
+{% if user.totp_enabled %}<p>{{ badge('active') }} Two-factor sign-in is on.</p><form method="post" action="{{ url_for('auth.mfa_disable') }}" class="stack" data-confirm="Turn off two-factor authentication?">{{ csrf() }}
+<div><label for="dp">Current password</label><input id="dp" type="password" name="current_password" required></div><button class="btn d">Turn off</button></form>
+{% elif secret %}<p>Add this key to an authenticator app (time-based, 6 digits, 30 s, SHA-1), then enter a code to confirm.</p><p><code class="hash">{{ secret }}</code></p>
+<p class="muted">Account label: <span class="mono">{{ user.username }}</span> · issuer: <span class="mono">SentinelTrace</span>. QR codes are not generated; enter the key manually.</p>
+<form method="post" action="{{ url_for('auth.mfa_confirm') }}" class="stack">{{ csrf() }}<div><label for="mc">Code</label><input id="mc" name="code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required></div><button class="btn p">Confirm and turn on</button></form>
+{% else %}<p class="muted">Add a second step to sign-in with an authenticator app.</p><form method="post" action="{{ url_for('auth.mfa_start') }}">{{ csrf() }}<button class="btn p">Set up two-factor</button></form>{% endif %}</div></div>{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf %}{% block title %}Create account{% endblock %}{% block public %}
+<div class="auth"><div class="card"><h1>Create account</h1>
+{% for c, m in get_flashed_messages(with_categories=true) %}<div class="flash {{ c }}" role="alert">{{ m }}</div>{% endfor %}
+{% if disabled %}<p>Self-registration is turned off on this server. Ask an administrator to create your account.</p>
+{% else %}<p class="muted">New accounts get the read-only analyst role.</p><form method="post" class="stack">{{ csrf() }}
+<div><label for="u">Username</label><input id="u" name="username" required pattern="[A-Za-z0-9_.\-]{3,32}" maxlength="32" autocomplete="username"></div>
+<div><label for="e">Email</label><input id="e" name="email" type="email" required maxlength="255" autocomplete="email"></div>
+<div><label for="p">Password (12+ characters)</label><input id="p" name="password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
+<button class="btn p" type="submit">Create account</button></form>{% endif %}<p><a href="{{ url_for('auth.login') }}">Back to sign in</a></p></div></div>{% endblock %}

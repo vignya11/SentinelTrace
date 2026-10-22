@@ -1,0 +1,6 @@
+{% macro icon(n) %}<svg class="ico" aria-hidden="true"><use href="{{ url_for('static', filename='icons.svg') }}#{{ n }}"/></svg>{% endmacro %}
+{% macro csrf() %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endmacro %}
+{% macro badge(v) %}<span class="badge b-{{ {'success':'ok','failure':'bad','blocked':'warn','info':'info','open':'warn','acknowledged':'info','dismissed':'muted','low':'info','medium':'warn','high':'bad','critical':'bad','closed':'muted','in_review':'info','active':'ok','disabled':'muted','admin':'info','investigator':'info','analyst':'muted'}.get(v,'muted') }}">{{ v|replace('_',' ') }}</span>{% endmacro %}
+{% macro syn(e) %}{% if e.synthetic %} <span class="badge b-syn" title="Synthetic demo record">synthetic</span>{% endif %}{% endmacro %}
+{% macro pager(res) %}{% if res.pages > 1 %}<div class="pager"><span class="muted">Page {{ res.page }} of {{ res.pages }} ({{ res.total }} records)</span><span class="row">
+{% if res.page > 1 %}<a href="{{ page_url(res.page-1) }}">Previous</a>{% endif %}<span class="cur">{{ res.page }}</span>{% if res.page < res.pages %}<a href="{{ page_url(res.page+1) }}">Next</a>{% endif %}</span></div>{% endif %}{% endmacro %}

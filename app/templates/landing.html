@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% from "_m.html" import icon %}{% block public %}
+<div class="pub"><header><span class="brand">{{ icon('shield') }} SentinelTrace</span><a class="btn ghostw" href="{{ url_for('auth.login') }}">Sign in</a></header>
+<section class="hero"><div><h1>Authentication logs you can prove haven't been quietly edited.</h1>
+<p>SentinelTrace records sign-in activity in a hash-linked chain, verifies it on demand, flags patterns that deserve a look, and packages evidence with digests and a chain of custody.</p>
+<div class="row mt22"><a class="btn p" href="{{ url_for('auth.login') }}">Sign in</a>{% if config.REGISTRATION_ENABLED %}<a class="btn" href="{{ url_for('auth.register') }}">Create account</a>{% endif %}</div></div>
+<div class="diagram"><svg viewBox="0 0 520 250" role="img" aria-label="Diagram of records linked by hashes"><g font-family="Cascadia Mono,Consolas,monospace" font-size="11" fill="#c9d5f2">
+<rect x="10" y="20" width="150" height="86" rx="8" fill="#13244d" stroke="#3b568f"/><text x="22" y="44" fill="#fff" font-size="13">record n-1</text><text x="22" y="66">fields + prev_hash</text><text x="22" y="88">hash = SHA-256(...)</text>
+<rect x="185" y="20" width="150" height="86" rx="8" fill="#13244d" stroke="#3b568f"/><text x="197" y="44" fill="#fff" font-size="13">record n</text><text x="197" y="66">fields + prev_hash</text><text x="197" y="88">hash = SHA-256(...)</text>
+<rect x="360" y="20" width="150" height="86" rx="8" fill="#13244d" stroke="#3b568f"/><text x="372" y="44" fill="#fff" font-size="13">record n+1</text><text x="372" y="66">fields + prev_hash</text><text x="372" y="88">hash = SHA-256(...)</text>
+<path d="M160 63h25M335 63h25" stroke="#6f9bff" stroke-width="2"/><path d="M180 58l5 5-5 5M355 58l5 5-5 5" stroke="#6f9bff" stroke-width="2" fill="none"/>
+<rect x="185" y="150" width="150" height="70" rx="8" fill="#0d3a2b" stroke="#1cae63"/><text x="197" y="176" fill="#fff" font-size="13">checkpoint</text><text x="197" y="198">HMAC-signed head</text>
+<path d="M260 150v-44" stroke="#1cae63" stroke-width="2" stroke-dasharray="4 3"/></g></svg>
+<p class="cap">Diagram: each record commits to the one before it. Checkpoints anchor the newest head outside the chain.</p></div></section>
+<section class="sec"><h2>What it does</h2><div class="feat">
+<div><h3>Tamper-evident log</h3>Canonical JSON, SHA-256 record hashes, explicit genesis, append-only database triggers, read-only verification.</div>
+<div><h3>Live monitoring</h3>Server-Sent Events from real database activity with automatic reconnect and polling fallback.</div>
+<div><h3>Configurable detection</h3>Six transparent rules. Each alert lists its trigger evidence and states that it is an indicator, not proof.</div>
+<div><h3>Investigations</h3>Cases, hypotheses, findings, a UTC timeline and cross-event correlation. Original records are never rewritten.</div>
+<div><h3>Evidence and custody</h3>JSON, CSV and PDF snapshots with SHA-256 digests and a hash-linked chain of custody.</div>
+<div><h3>Least privilege</h3>Admin, investigator and analyst roles enforced on every route. Optional TOTP two-factor sign-in.</div></div></section>
+<section class="sec pt0"><h2>Limits you should know</h2><div class="card"><ul>
+<li>A hash chain alone is not tamper-proof. Someone who can rewrite every record and recompute every hash is only caught by an independent checkpoint (HMAC key and external file kept outside the database).</li>
+<li>Without any checkpoint, deletion of the newest records cannot be detected.</li>
+<li>SentinelTrace sees only events it records or that an authorized source sends to its ingest API. It does not watch your operating systems on its own.</li>
+<li>Alerts are leads for investigation. They are not proof of compromise or of a person's intent.</li></ul></div>
+<h2>Demo access</h2><p>A demo environment runs against a separate database filled with clearly labelled synthetic data. Create it with <code>python scripts/seed_demo.py</code>; the sign-in details are printed once in your terminal and are never stored in the repository.</p></section></div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_m.html" import icon, badge, syn %}{% block title %}Suspicious activity{% endblock %}{% block content %}
+<div class="page-h"><div><h1>Suspicious authentication activity</h1><p>Rule-based indicators requiring investigation. They are not proof of compromise.</p></div>
+<div class="row">{% for s in ['open','acknowledged','dismissed','all'] %}<a class="btn sm {{ 'p' if status==s }}" href="{{ url_for('main.alerts', status=s) }}">{{ s }}</a>{% endfor %}</div></div>
+<div class="card"><div class="tw"><table><tr><th>Raised</th><th>Severity</th><th>Rule</th><th>Subject</th><th>Status</th></tr>
+{% for a in rows %}<tr><td><a href="{{ url_for('main.alert_detail', aid=a.id) }}">{{ a.created_at|ts }}</a></td><td>{{ badge(a.severity) }}</td><td>{{ rules[a.rule].label if a.rule in rules else a.rule }}{{ syn(a) }}</td><td class="mono">{{ a.subject }}</td><td>{{ badge(a.status) }}</td></tr>
+{% else %}<tr><td colspan="5" class="empty">No alerts in this view.</td></tr>{% endfor %}</table></div></div>
+<div class="card"><h2>Active rules</h2><div class="tw"><table><tr><th>Rule</th><th>Setting</th></tr>{% for k, r in rules.items() %}<tr><td>{{ r.label }}</td><td class="mono">{% for a, b in r.items() if a not in ('label','severity') %}{{ a }}={{ b }} {% endfor %}</td></tr>{% endfor %}</table></div></div>{% endblock %}

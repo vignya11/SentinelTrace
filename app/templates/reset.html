@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf %}{% block title %}Set new password{% endblock %}{% block public %}
+<div class="auth"><div class="card"><h1>Set a new password</h1>
+{% for c, m in get_flashed_messages(with_categories=true) %}<div class="flash {{ c }}" role="alert">{{ m }}</div>{% endfor %}
+<form method="post" class="stack">{{ csrf() }}<div><label for="p">New password (12+ characters)</label><input id="p" name="password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
+<button class="btn p" type="submit">Save password</button></form></div></div>{% endblock %}

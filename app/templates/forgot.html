@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf %}{% block title %}Account recovery{% endblock %}{% block public %}
+<div class="auth"><div class="card"><h1>Account recovery</h1>
+{% for c, m in get_flashed_messages(with_categories=true) %}<div class="flash {{ c }}" role="status">{{ m }}</div>{% endfor %}
+{% if enabled %}<p class="muted">This server uses the development <b>file outbox</b> adapter: the reset link is written to a file in the server's outbox folder and no email is sent. Configure a real mail adapter for production.</p>
+<form method="post" class="stack">{{ csrf() }}<div><label for="i">Username or email</label><input id="i" name="identifier" required maxlength="255"></div><button class="btn p" type="submit">Request reset link</button></form>
+{% else %}<p>Self-service recovery is not enabled on this server. Contact your administrator to reset your password.</p>{% endif %}
+<p><a href="{{ url_for('auth.login') }}">Back to sign in</a></p></div></div>{% endblock %}

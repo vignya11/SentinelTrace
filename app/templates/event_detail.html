@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf, badge, syn %}{% block title %}Event{% endblock %}{% block content %}
+<div class="page-h"><div><h1>Event {{ e.chain_seq }}{{ syn(e) }}</h1><p class="mono">{{ e.event_id }}</p></div></div>
+<div class="cols"><div class="card"><h2>Record</h2><dl class="kv"><dt>Time (UTC)</dt><dd>{{ e.ts }}</dd><dt>Type</dt><dd>{{ e.event_type }}</dd><dt>Outcome</dt><dd>{{ badge(e.outcome) }}</dd>
+<dt>Account</dt><dd>{{ e.username or '-' }}</dd><dt>Source IP</dt><dd class="mono">{{ e.source_ip }}</dd><dt>User agent</dt><dd>{{ e.user_agent or '-' }}</dd><dt>Chain</dt><dd>{{ e.chain_id }} · seq {{ e.chain_seq }} · schema v{{ e.schema_version }}</dd>
+<dt>Previous hash</dt><dd><span class="hash">{{ e.prev_hash }}</span></dd><dt>Record hash</dt><dd><span class="hash">{{ e.record_hash }}</span></dd>
+<dt>Metadata</dt><dd>{% for k, v in meta.items() %}<span class="mono">{{ k }}={{ v }}</span> {% else %}none{% endfor %}</dd></dl></div>
+<div class="card"><h2>Cases</h2>{% for c in cases %}<p><a href="{{ url_for('main.case_detail', ref=c.ref) }}">{{ c.ref }}</a> {{ c.title }}</p>{% else %}<p class="muted">Not linked to any case you can access.</p>{% endfor %}
+{% if my_cases %}<form method="post" action="{{ url_for('main.event_to_case', event_id=e.event_id) }}" class="stack">{{ csrf() }}
+<label for="cs">Add this event to a case</label><select id="cs" name="case_ref" required>{% for c in my_cases %}<option value="{{ c.ref }}">{{ c.ref }} - {{ c.title }}</option>{% endfor %}</select><button class="btn sm">Link event</button></form>{% endif %}</div></div>{% endblock %}

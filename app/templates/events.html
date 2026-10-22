@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% from "_m.html" import icon, badge, syn, pager %}{% block title %}Authentication events{% endblock %}{% block content %}
+<div class="page-h"><div><h1>Authentication events</h1><p>{{ res.total }} matching records. Server-side filtering and pagination.</p></div></div>
+<form method="get" class="card"><div class="fg">
+<div><label for="q">Search</label><input id="q" name="q" value="{{ f.get('q','') }}" placeholder="user, IP, agent, event ID"></div>
+<div><label for="et">Event type</label><select id="et" name="event_type"><option value="">All</option>{% for t in types %}<option value="{{ t }}" {{ 'selected' if f.get('event_type')==t }}>{{ t|replace('_',' ') }}</option>{% endfor %}</select></div>
+<div><label for="oc">Outcome</label><select id="oc" name="outcome"><option value="">All</option>{% for t in ['success','failure','blocked','info'] %}<option {{ 'selected' if f.get('outcome')==t }}>{{ t }}</option>{% endfor %}</select></div>
+<div><label for="un">Username</label><input id="un" name="username" value="{{ f.get('username','') }}"></div>
+<div><label for="ip">Source IP</label><input id="ip" name="ip" value="{{ f.get('ip','') }}"></div>
+<div><label for="df">From (UTC date)</label><input id="df" type="date" name="date_from" value="{{ f.get('date_from','') }}"></div>
+<div><label for="dt">To (UTC date)</label><input id="dt" type="date" name="date_to" value="{{ f.get('date_to','') }}"></div>
+<div><label for="sy">Data</label><select id="sy" name="synthetic"><option value="">All</option><option value="0" {{ 'selected' if f.get('synthetic')=='0' }}>Real only</option><option value="1" {{ 'selected' if f.get('synthetic')=='1' }}>Synthetic only</option></select></div>
+<div class="row"><button class="btn p">{{ icon('check') }} Apply</button><a class="btn" href="{{ url_for('main.events') }}">Reset</a></div></div></form>
+<div class="card"><div class="tw"><table><tr><th>Time (UTC)</th><th>Type</th><th>Outcome</th><th>Account</th><th>Source IP</th><th class="n">Seq</th><th>Record hash</th></tr>
+{% for e in res.rows %}<tr><td><a href="{{ url_for('main.event_detail', event_id=e.event_id) }}">{{ e.ts[:19]|replace('T',' ') }}</a></td><td>{{ e.event_type|replace('_',' ') }}</td><td>{{ badge(e.outcome) }}</td><td>{{ e.username or '-' }}</td><td class="mono">{{ e.source_ip }}{{ syn(e) }}</td><td class="n">{{ e.chain_seq }}</td><td><span class="hash">{{ e.record_hash|short }}</span></td></tr>
+{% else %}<tr><td colspan="7" class="empty">No events match these filters.</td></tr>{% endfor %}</table></div>{{ pager(res) }}</div>{% endblock %}

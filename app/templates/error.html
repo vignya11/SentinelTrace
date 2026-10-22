@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% from "_m.html" import icon %}{% block title %}{{ title }}{% endblock %}
+{% block content %}<div class="card mw560"><h1>{{ code }} · {{ title }}</h1><p>{{ message }}</p><a class="btn" href="{{ url_for('main.landing') }}">Go to start</a></div>{% endblock %}
+{% block public %}<div class="auth"><div class="card"><h1>{{ code }} · {{ title }}</h1><p>{{ message }}</p><a class="btn" href="{{ url_for('auth.login') }}">Go to sign in</a></div></div>{% endblock %}

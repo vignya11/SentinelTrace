@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf %}{% block title %}Sign in{% endblock %}{% block public %}
+<div class="auth"><div class="card"><h1>{{ icon('shield') }} Sign in</h1>
+{% for c, m in get_flashed_messages(with_categories=true) %}<div class="flash {{ c }}" role="alert">{{ m }}</div>{% endfor %}
+<form method="post" class="stack" autocomplete="on">{{ csrf() }}
+<div><label for="u">Username</label><input id="u" name="username" required maxlength="64" autocomplete="username" autofocus></div>
+<div><label for="p">Password</label><input id="p" name="password" type="password" required maxlength="256" autocomplete="current-password"></div>
+<button class="btn p" type="submit">Sign in</button></form>
+<p class="row mt14"><a href="{{ url_for('auth.forgot') }}">Forgot password</a>{% if config.REGISTRATION_ENABLED %}<a href="{{ url_for('auth.register') }}">Create account</a>{% endif %}<a href="{{ url_for('main.landing') }}">About SentinelTrace</a></p></div></div>{% endblock %}

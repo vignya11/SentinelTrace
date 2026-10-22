@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf, badge, syn %}{% block title %}Overview{% endblock %}{% block content %}
+<div class="page-h"><div><h1>Security overview</h1><p>Calculated from the event database at {{ m.generated_at|ts }}.</p></div>
+<div class="row"><span class="live" id="live-status"><i></i><span> Connecting…</span></span>
+{% if can('simulator.run') and config.SIMULATOR_ENABLED %}<form method="post" action="{{ url_for('main.simulator_run') }}" class="inline">{{ csrf() }}<input type="hidden" name="mode" value="normal"><button class="btn sm">{{ icon('play') }} Simulate synthetic logins</button></form>
+<form method="post" action="{{ url_for('main.simulator_run') }}" class="inline">{{ csrf() }}<input type="hidden" name="mode" value="burst"><button class="btn sm">{{ icon('play') }} Simulate failure burst</button></form>{% endif %}</div></div>
+<div class="tiles">
+<div class="tile"><b data-m="total_events">{{ m.total_events }}</b><span>Events recorded</span></div>
+<div class="tile t-ok"><b data-m="logins_success_24h">{{ m.logins_success_24h }}</b><span>Successful logins, 24 h</span></div>
+<div class="tile t-bad"><b data-m="logins_failed_24h">{{ m.logins_failed_24h }}</b><span>Failed logins, 24 h</span></div>
+<div class="tile"><b data-m="failure_rate_24h" data-suffix="%">{{ m.failure_rate_24h if m.failure_rate_24h is not none else 'n/a' }}{{ '%' if m.failure_rate_24h is not none }}</b><span>Failure rate, 24 h</span></div>
+<div class="tile t-warn"><b data-m="open_alerts">{{ m.open_alerts }}</b><span>Open alerts</span></div>
+<div class="tile {{ 't-ok' if m.integrity and m.integrity.ok else 't-bad' if m.integrity else '' }}"><b>{{ 'Verified' if m.integrity and m.integrity.ok else 'FAILED' if m.integrity else 'Not run' }}</b><span>{% if m.integrity %}Last check {{ m.integrity.last_run|ts }}{% else %}Run a verification{% endif %}</span></div></div>
+<div class="cols"><div class="card"><h2>Logins per hour (UTC, last 24 h)</h2><div id="trend" class="chart skeleton"></div>
+<script type="application/json" id="trend-data">{{ m.hourly|tojson }}</script><div class="legend"><span><i class="lg-s"></i>Successful</span><span><i class="lg-f"></i>Failed</span></div></div>
+<div class="card"><h2>Top failing sources, 24 h</h2>{% if m.top_sources %}<div class="tw"><table><tr><th>Source IP</th><th class="n">Failures</th><th class="n">Accounts</th></tr>
+{% for s in m.top_sources %}<tr><td class="mono">{{ s.ip }}</td><td class="n">{{ s.failures }}</td><td class="n">{{ s.accounts }}</td></tr>{% endfor %}</table></div>
+{% else %}<div class="empty">No failed logins in the last 24 hours.</div>{% endif %}</div></div>
+<div class="cols"><div class="card"><h2>Recent events</h2><div class="tw"><table><thead><tr><th>Time (UTC)</th><th>Type</th><th>Outcome</th><th>Account</th><th>Source</th></tr></thead>
+<tbody id="live-body" data-last-id="{{ last_id }}">{% for e in recent %}<tr><td><a href="{{ url_for('main.event_detail', event_id=e.event_id) }}">{{ e.ts[:19]|replace('T',' ') }}</a></td><td>{{ e.event_type|replace('_',' ') }}</td><td>{{ badge(e.outcome) }}</td><td>{{ e.username or '-' }}</td><td class="mono">{{ e.source_ip }}{{ syn(e) }}</td></tr>
+{% else %}<tr id="live-empty"><td colspan="5" class="empty">No events yet. Sign in/out, ingest events, or (demo only) run the simulator.</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="card"><h2>Open alerts</h2>{% for a in alerts %}<p>{{ badge(a.severity) }} <a href="{{ url_for('main.alert_detail', aid=a.id) }}">{{ a.rule|replace("_"," ") }}</a><br><span class="muted">{{ a.subject }} · {{ a.created_at|ts }}</span></p>
+{% else %}<div class="empty">No open alerts.</div>{% endfor %}<a href="{{ url_for('main.alerts') }}">All alerts</a>
+{% if m.chain_head %}<hr><h3>Chain head</h3><p class="muted">Sequence {{ m.chain_head.seq }}</p><span class="hash">{{ m.chain_head.hash|short }}</span>{% endif %}</div></div>{% endblock %}

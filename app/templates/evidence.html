@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% from "_m.html" import icon, csrf, badge %}{% block title %}Evidence{% endblock %}{% block content %}
+<div class="page-h"><div><h1>Evidence acquisition</h1><p>Exports are write-once snapshots. Source records are never changed. Each artifact gets a SHA-256 digest and a chain-of-custody entry.</p></div></div>
+{% if can('evidence.export') %}<form method="post" action="{{ url_for('main.evidence_export') }}" class="card"><h2>Acquire a snapshot</h2>{{ csrf() }}<div class="fg">
+<div><label for="f">Format</label><select id="f" name="format"><option value="json">JSON (full records + manifest)</option><option value="csv">CSV</option><option value="pdf">PDF report</option></select></div>
+<div><label for="q">Search</label><input id="q" name="q"></div><div><label for="et">Event type</label><select id="et" name="event_type"><option value="">All</option>{% for t in types %}<option value="{{ t }}">{{ t|replace('_',' ') }}</option>{% endfor %}</select></div>
+<div><label for="un">Username</label><input id="un" name="username"></div><div><label for="ip">Source IP</label><input id="ip" name="ip"></div>
+<div><label for="df">From (UTC)</label><input id="df" type="date" name="date_from"></div><div><label for="dt">To (UTC)</label><input id="dt" type="date" name="date_to"></div>
+<div><label for="cr">Attach to case</label><select id="cr" name="case_ref"><option value="">None</option>{% for c in cases %}<option value="{{ c.ref }}">{{ c.ref }}</option>{% endfor %}</select></div>
+<div><button class="btn p">{{ icon('archive') }} Acquire</button></div></div></form>{% endif %}
+<div class="card"><h2>Artifacts</h2><div class="tw"><table><tr><th>Reference</th><th>Format</th><th class="n">Records</th><th>SHA-256</th><th>Created</th><th>By</th></tr>
+{% for e in rows %}<tr><td><a href="{{ url_for('main.evidence_detail', ref=e.ref) }}">{{ e.ref }}</a></td><td>{{ e.fmt|upper }}</td><td class="n">{{ e.record_count }}</td><td><span class="hash">{{ e.sha256|short }}</span></td><td>{{ e.created_at|ts }}</td><td>{{ e.creator }}</td></tr>
+{% else %}<tr><td colspan="6" class="empty">No evidence acquired yet.</td></tr>{% endfor %}</table></div></div>{% endblock %}

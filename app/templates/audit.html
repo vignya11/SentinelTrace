@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% from "_m.html" import icon, pager %}{% block title %}Audit trail{% endblock %}{% block content %}
+<div class="page-h"><div><h1>Administrative audit trail</h1><p>Append-only and hash-linked. Records admin changes, exports, downloads and verifications.</p></div></div>
+<form method="get" class="card row"><div><label for="a">Action starts with</label><input id="a" name="action" value="{{ act }}" placeholder="e.g. evidence"></div><button class="btn">Filter</button></form>
+<div class="card"><div class="tw"><table><tr><th>Time (UTC)</th><th>Actor</th><th>Action</th><th>Target</th><th>Detail</th><th>IP</th></tr>
+{% for r in rows %}<tr><td>{{ r.ts|ts }}</td><td>{{ r.actor_name }}</td><td>{{ r.action }}</td><td>{{ r.target }}</td><td>{{ r.detail }}</td><td class="mono">{{ r.ip }}</td></tr>{% else %}<tr><td colspan="6" class="empty">No audit entries.</td></tr>{% endfor %}</table></div>{{ pager(res) }}</div>{% endblock %}

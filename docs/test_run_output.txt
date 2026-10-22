@@ -1,0 +1,81 @@
+Command: python -m unittest discover -s tests -t . -v
+Python: Python 3.12.3  Flask: 3.1.3
+Run date (sandbox clock): 2026-10-22T04:47:24Z
+
+test_alert_status_workflow_and_case_link ... ok
+test_failures_outside_window_do_not_count ... ok
+test_live_events_create_alerts_via_login_failures ... ok
+test_new_ip_or_device ... ok
+test_no_duplicate_alerts_for_ongoing_burst ... ok
+test_repeated_failures_threshold ... ok
+test_source_burst_and_many_accounts ... ok
+test_success_after_failures ... ok
+test_thresholds_are_configurable ... ok
+test_unusual_hour_relative_to_baseline ... ok
+test_api_rate_limit ... ok
+test_errors_are_consistent_and_hide_internals ... {"ts":"2026-10-22 04:47:05,203","level":"ERROR","logger":"app","msg":"Exception on /boom [GET]"}
+test_events_page_filters_render ... ok
+test_filters ... ok
+test_health_reveals_nothing_sensitive ... ok
+test_ingest_auth_validation_and_chain ... ok
+test_ingest_disabled_without_token_and_rate_limited ... ok
+test_metrics_are_derived_from_database ... ok
+test_pagination ... ok
+test_stream_requires_auth_and_emits_events ... ok
+test_admin_can_unlock ... ok
+test_cookie_flags ... ok
+test_csrf_rejected ... ok
+test_invalid_login_is_generic_and_recorded ... ok
+test_login_throttling_and_backoff ... ok
+test_logout_invalidates_server_side_session ... ok
+test_mfa_flow_wrong_code_and_replay ... ok
+test_must_change_password_forces_account_page ... ok
+test_password_change_rotates_session_and_kills_others ... ok
+test_password_hash_and_plaintext_never_exposed ... ok
+test_password_policy ... ok
+test_recovery_disabled_by_default_and_file_adapter_single_use ... ok
+test_registration_disabled_by_default_and_least_privilege_when_enabled ... ok
+test_security_headers ... ok
+test_session_rotation_on_login_prevents_fixation ... ok
+test_valid_login_and_event_recorded ... ok
+test_append_only_triggers_block_normal_writes ... ok
+test_broken_previous_hash_link_detected_even_with_recomputed_hash ... ok
+test_checkpoint_refuses_tampered_chain ... ok
+test_deleted_middle_record_detected ... ok
+test_empty_chain_ok ... ok
+test_events_persist_across_app_restart ... ok
+test_full_rewrite_caught_by_external_checkpoint_and_hmac ... ok
+test_integrity_page_and_api_report_findings ... ok
+test_modified_record_detected ... ok
+test_reordered_records_detected ... ok
+test_sensitive_metadata_dropped_and_unknown_types_rejected ... ok
+test_tail_deletion_detected_with_checkpoint ... ok
+test_tail_deletion_undetectable_without_checkpoint_but_warned ... ok
+test_valid_chain_and_genesis ... ok
+test_verification_is_read_only ... ok
+test_wrong_key_flags_signature ... ok
+test_api_export_returns_digest ... ok
+test_case_report_and_forensic_workflow ... ok
+test_csv_export_and_formula_injection_guard ... ok
+test_custody_entries_append_only_and_hash_linked ... ok
+test_download_logs_custody_and_audit ... /usr/lib/python3.12/unittest/case.py:589: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/st_test_3yb7xgg2/ev/EV-20261022-82A34F.json'>
+test_export_validation ... ok
+test_json_export_digest_manifest_and_record_hashes ... ok
+test_pdf_export ... ok
+test_tampered_artifact_is_refused_and_logged ... ok
+test_linux_adapter ... ok
+test_open_redirect_guard ... ok
+test_production_requires_strong_secret ... ok
+test_totp_rfc6238_vector ... ok
+test_windows_adapter ... ok
+test_admin_safety_guards ... ok
+test_analyst_is_read_only ... ok
+test_audit_trail_is_append_only ... ok
+test_case_idor ... ok
+test_create_user_flow_temp_password ... ok
+test_evidence_idor_and_download ... ok
+test_investigator_cannot_administer ... ok
+test_role_change_revokes_sessions_and_is_audited ... ok
+test_unauthenticated ... ok
+Ran 75 tests in 21.385s
+OK

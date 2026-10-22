@@ -1,0 +1,26 @@
+{% from "_m.html" import icon, csrf %}<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf" content="{{ csrf_token() }}"><meta name="color-scheme" content="light">
+<title>{% block title %}SentinelTrace{% endblock %} - SentinelTrace</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script></head>
+<body>{% if user %}
+<div class="top"><button data-nav-toggle aria-label="Toggle navigation">{{ icon('menu') }}</button>{{ icon('shield') }} <b>SentinelTrace</b></div>
+{% if env == 'demo' %}<div class="banner"><b>Demo environment.</b> Data in this database is synthetic and generated for demonstration. It is not real authentication activity.</div>{% endif %}
+<div class="app"><aside class="side"><a class="brand" href="{{ url_for('main.dashboard') }}">{{ icon('shield') }} SentinelTrace</a>
+<nav aria-label="Main">{% set ep = request.endpoint %}
+<a class="{{ 'on' if ep=='main.dashboard' }}" href="{{ url_for('main.dashboard') }}">{{ icon('grid') }} Overview</a>
+<a class="{{ 'on' if ep in ('main.events','main.event_detail') }}" href="{{ url_for('main.events') }}">{{ icon('list') }} Authentication events</a>
+<a class="{{ 'on' if ep=='main.integrity' }}" href="{{ url_for('main.integrity') }}">{{ icon('link') }} Integrity</a>
+<a class="{{ 'on' if ep in ('main.alerts','main.alert_detail') }}" href="{{ url_for('main.alerts') }}">{{ icon('bell') }} Suspicious activity</a>
+{% if can('cases.manage') %}<div class="grp">Forensics</div>
+<a class="{{ 'on' if ep in ('main.cases','main.case_detail') }}" href="{{ url_for('main.cases') }}">{{ icon('folder') }} Investigations</a>
+<a class="{{ 'on' if ep in ('main.evidence','main.evidence_detail') }}" href="{{ url_for('main.evidence') }}">{{ icon('archive') }} Evidence &amp; custody</a>{% endif %}
+{% if can('users.manage') %}<div class="grp">Administration</div>
+<a class="{{ 'on' if ep=='main.users' }}" href="{{ url_for('main.users') }}">{{ icon('users') }} Users &amp; roles</a>
+<a class="{{ 'on' if ep=='main.settings' }}" href="{{ url_for('main.settings') }}">{{ icon('cog') }} Settings &amp; health</a>
+<a class="{{ 'on' if ep=='main.audit_view' }}" href="{{ url_for('main.audit_view') }}">{{ icon('scroll') }} Audit trail</a>{% endif %}</nav>
+<div class="me"><a class="wh" href="{{ url_for('auth.account') }}">{{ icon('user') }} {{ user.username }}</a><div class="muted mside">{{ user.role }}</div>
+<form method="post" action="{{ url_for('auth.logout') }}">{{ csrf() }}<button class="btn sm" type="submit">{{ icon('logout') }} Sign out</button></form></div></aside>
+<main class="main" id="main">{% for c, m in get_flashed_messages(with_categories=true) %}<div class="flash {{ c }}" role="status">{{ m }}</div>{% endfor %}{% block content %}{% endblock %}</main></div>
+{% else %}{% block public %}{% endblock %}{% endif %}</body></html>
